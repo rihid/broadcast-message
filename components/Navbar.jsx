@@ -16,7 +16,7 @@ export default function Navbar() {
                         </a>
                     </div>
                     <div
-                        className="bg-[#68E874] border border-[#5ADD66] hover:bg-green-400 font-bold text-white my-[10px] px-[38px] py-[10px] flex items-center cursor-pointer rounded-[50px]"
+                        className="bg-blue-500 border border-blue-600 hover:bg-blue-600 font-bold text-white my-[10px] px-[38px] py-[10px] flex items-center cursor-pointer rounded-[50px]"
                         // onClick={() => signOut({
                         //     callbackUrl: process.env.NEXT_PUBLIC_ADMIN_SIGNIN_URL
                         // })}
