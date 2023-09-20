@@ -1,5 +1,6 @@
 import React from 'react'
 import Image from 'next/image'
+import Icon from './Icon'
 
 export default function Navbar() {
     return (
@@ -16,11 +17,12 @@ export default function Navbar() {
                         </a>
                     </div>
                     <div
-                        className="bg-blue-500 border border-blue-600 hover:bg-blue-600 font-bold text-white my-[10px] px-[38px] py-[10px] flex items-center cursor-pointer rounded-[50px]"
+                        className="font-semibold text-gray-500 my-[10px] px-[38px] py-[10px] flex items-center gap-2 cursor-pointer"
                         // onClick={() => signOut({
                         //     callbackUrl: process.env.NEXT_PUBLIC_ADMIN_SIGNIN_URL
                         // })}
                     >
+                        <Icon name="icon-sign-out" size={20} />
                         <span>Keluar</span>
                     </div>
                 </div>

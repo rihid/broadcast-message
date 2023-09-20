@@ -4,7 +4,10 @@ import FormOption from './FormOption'
 export default function TableContacts({
     handleOpenForm,
     data,
+    handleEdit,
+    handleDelete,
 }) {
+    // console.log(data)
     return (
         <>
             <FormOption
@@ -27,11 +30,17 @@ export default function TableContacts({
                                 <td className="px-6 py-4">{row.name}</td>
                                 <td className="px-6 py-4">{row.phone}</td>
                                 <td className="px-6 py-4">
-                                    <span className="font-medium text-blue-500 cursor-pointer hover:underline">
+                                    <span 
+                                        className="font-medium text-blue-500 cursor-pointer hover:underline"
+                                        onClick={() => handleEdit(row)}
+                                    >
                                         Edit
                                     </span>
                                     <span> | </span>
-                                    <span className="font-medium text-red-500 cursor-pointer hover:underline">
+                                    <span 
+                                        className="font-medium text-red-500 cursor-pointer hover:underline"
+                                        onClick={() => handleDelete(row.id)}
+                                    >
                                         Hapus
                                     </span>
                                 </td>

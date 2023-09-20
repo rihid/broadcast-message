@@ -3,13 +3,22 @@ import Button from './Button'
 import ButtonIcon from './ButtonIcon'
 import Input from './Input'
 
-export default function FormContact({
+
+export default function FormEditContact({
     data,
     handleOpen,
     handleChange,
-    handleSubmit,
+    handleUpdate,
 }) {
-    console.log(data)
+
+    // console.log(data.id, data)
+
+    const _handleSubmit = (e) => {
+        e.preventDefault();
+        if (!data.name || !data.phone) return;
+        handleUpdate(data.id, data);
+    }
+    
     return (
         <div className="fixed top-0 left-0 w-full h-full bg-[#000000d4]">
             <div className="fixed top-0 right-0 w-full md:w-[440px] h-full bg-white overflow-auto">
@@ -22,7 +31,7 @@ export default function FormContact({
                     </div>
                 </div>
                 <form
-                    onSubmit={handleSubmit}
+                    onSubmit={_handleSubmit}
                     className="flex flex-col gap-[20px] p-[20px]"
                 >
                     <div className="">
