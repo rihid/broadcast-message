@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Layout from '@/components/Layout'
 import Button from '@/components/Button'
@@ -6,6 +6,9 @@ import Input from '@/components/Input'
 import TableContacts from '@/components/TableContacts'
 import FormContact from '@/components/FormContact'
 import FormEditContact from '@/components/FormEditContact'
+
+// Supabase
+import supabase from '@/config/supabase'
 
 const dataContact = [
     {
@@ -21,21 +24,35 @@ const dataContact = [
 ];
 
 const initialForm = {
-    id: Date.now(),
     name: '',
     phone: '',
+    address: '',
+    message_id: 1,
 }
 
 export default function Home() {
+    // console.log(supabase)
 
     // Options State
     const [openForm, setOpenForm] = useState(false);
     const [openEditForm, setEditForm] = useState(false);
     const [isLoading, setIsloading] = useState(true);
     // Data State
-    const [contacts, setContact] = useState(dataContact);
+    const [contacts, setContact] = useState([]);
     const [form, setForm] = useState(initialForm);
 
+    // Feth all data
+    const fetchReadAll = async () => {
+        const { data, error } = await supabase.from('contacts').select()
+        if (error) {
+            console.log(error)
+            setIsloading(false)
+        }
+        if (data) {
+            setContact(data);
+            setIsloading(false)
+        }
+    }
     // Open Create Form
     const _handleOpenForm = () => {
         setOpenForm(true);
@@ -48,34 +65,73 @@ export default function Home() {
     }
 
     // Handle add new Data
-    const handleAddContact = (contact) => {
-        setContact([...contacts, contact]);
-        setOpenForm(false)
-    }
+    // const handleAddContact = (contact) => {
+    //     setContact([...contacts, contact]);
 
-    // Submit data after Add
-    const _handleSubmit = (e) => {
+    // }
+
+    // Submit new data
+    const _handleSubmit = async (e) => {
         e.preventDefault();
-        if (!form.name || !form.phone) return
-        handleAddContact(form);
+        setIsloading(true);
+        if (!form.name || !form.phone) return;
+
+        const {data, error} = await supabase.from('contacts').insert(form);
+        if(error){
+            console.log(error);
+        }
+        if(data){
+            console.log("success")
+        }
+        await fetchReadAll();
+        setIsloading(false);
+        setOpenForm(false)
         setForm(initialForm)
     }
 
     // Handle edit
     const _handleEditData = (contact) => {
+        console.log(contact)
         setEditForm(true)
-        setForm({ id: contact.id, name: contact.name, phone: contact.phone })
+        setForm(contact)
     }
-    // Update data
-    const _handleUpdateData = (id, updatedData) => {
-        setEditForm(false)
-        setContact(contacts.map(row => (row.id === id ? updatedData : row)));
+
+    const _handleUpdatedData = async (e) => {
+        // console.log(form.id)
+        e.preventDefault();
+        setIsloading(true);
+        // if (!form.name || !form.phone) return;
+        const {data, error} = await supabase.from('contacts').update(form).eq('id', form.id);
+        if(error){
+            console.log(error);
+        }
+        if(data){
+            console.log(data)
+        }
+        await fetchReadAll();
+        setIsloading(false);
+        setEditForm(false);
+        setForm(initialForm)
     }
 
     // Handle delete data
-    const _handleDeleteData = (id) => {
-        setContact(contacts.filter(row => row.id !== id))
+    const _handleDeleteData = async (id) => {
+        console.log(id)
+        const confirm = window.confirm(`Apakah anda yakin ingin menghapus data`);
+        if (!confirm) return;
+        const { error } = await supabase.from('contacts').delete().eq('id', id)
+        setContact(prev => {
+            return prev.filter(row => row.id !== id)
+        })
     }
+
+    // Fetch data form API
+    // Contact
+    useEffect(() => {
+        fetchReadAll();
+    }, [])
+
+    // Post Contact 
 
     return (
         <Layout>
@@ -84,6 +140,7 @@ export default function Home() {
                 <div className="bg-white">
                     <TableContacts
                         data={contacts}
+                        loadingTable={isLoading}
                         handleOpenForm={_handleOpenForm}
                         handleEdit={_handleEditData}
                         handleDelete={_handleDeleteData}
@@ -92,6 +149,7 @@ export default function Home() {
                 {openForm &&
                     <FormContact
                         data={form}
+                        loadingForm={isLoading}
                         handleOpen={() => setOpenForm(false)}
                         handleChange={_handleChangeForm}
                         handleSubmit={_handleSubmit}
@@ -100,9 +158,10 @@ export default function Home() {
                 {openEditForm &&
                     <FormEditContact
                         data={form}
+                        loadingForm={isLoading}
                         handleOpen={() => setEditForm(false)}
                         handleChange={_handleChangeForm}
-                        handleUpdate={_handleUpdateData}
+                        handleSubmit={_handleUpdatedData}
                     />
                 }
             </div>

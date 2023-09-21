@@ -6,6 +6,7 @@ import Input from './Input'
 export default function FormContact({
     data,
     handleOpen,
+    loadingForm,
     handleChange,
     handleSubmit,
 }) {
@@ -47,7 +48,7 @@ export default function FormContact({
                     <div className="grid grid-cols-1">
                         <Button
                             type="submit"
-                            label={'Simpan'}
+                            label={loadingForm ? 'Loading...' : 'Simpan'}
                         />
                     </div>
                 </form>

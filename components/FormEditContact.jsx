@@ -7,18 +7,11 @@ import Input from './Input'
 export default function FormEditContact({
     data,
     handleOpen,
+    loadingForm,
     handleChange,
-    handleUpdate,
+    handleSubmit,
 }) {
-
-    // console.log(data.id, data)
-
-    const _handleSubmit = (e) => {
-        e.preventDefault();
-        if (!data.name || !data.phone) return;
-        handleUpdate(data.id, data);
-    }
-    
+    console.log(data)
     return (
         <div className="fixed top-0 left-0 w-full h-full bg-[#000000d4]">
             <div className="fixed top-0 right-0 w-full md:w-[440px] h-full bg-white overflow-auto">
@@ -31,7 +24,7 @@ export default function FormEditContact({
                     </div>
                 </div>
                 <form
-                    onSubmit={_handleSubmit}
+                    onSubmit={handleSubmit}
                     className="flex flex-col gap-[20px] p-[20px]"
                 >
                     <div className="">
@@ -56,7 +49,7 @@ export default function FormEditContact({
                     <div className="grid grid-cols-1">
                         <Button
                             type="submit"
-                            label={'Simpan'}
+                            label={loadingForm ? 'Loading...' : 'Simpan'}
                         />
                     </div>
                 </form>
