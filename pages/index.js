@@ -6,6 +6,7 @@ import Input from '@/components/Input'
 import TableContacts from '@/components/TableContacts'
 import FormContact from '@/components/FormContact'
 import FormEditContact from '@/components/FormEditContact'
+import MenuItems from '@/components/MenuItems'
 
 // Supabase
 import supabase from '@/config/supabase'
@@ -39,9 +40,11 @@ export default function Home() {
     const [isLoading, setIsloading] = useState(true);
     // Data State
     const [contacts, setContact] = useState([]);
+    const [message, setMessage] = useState()
     const [form, setForm] = useState(initialForm);
 
     // Feth all data
+    // Contact
     const fetchReadAll = async () => {
         const { data, error } = await supabase.from('contacts').select()
         if (error) {
@@ -50,6 +53,18 @@ export default function Home() {
         }
         if (data) {
             setContact(data);
+            setIsloading(false)
+        }
+    }
+    // MEssage
+    const fetchReadAllMsg = async () => {
+        const { data, error } = await supabase.from('messages').select()
+        if (error) {
+            console.log(error)
+            setIsloading(false)
+        }
+        if (data) {
+            setMessage(data);
             setIsloading(false)
         }
     }
@@ -116,10 +131,10 @@ export default function Home() {
 
     // Handle delete data
     const _handleDeleteData = async (id) => {
-        console.log(id)
-        const confirm = window.confirm(`Apakah anda yakin ingin menghapus data`);
+        
+        const confirm = window.confirm(`Apakah anda yakin ingin menghapus data ini`);
         if (!confirm) return;
-        const { error } = await supabase.from('contacts').delete().eq('id', id)
+        const { error } = await supabase.from('contacts').delete().eq('id', id);
         setContact(prev => {
             return prev.filter(row => row.id !== id)
         })
@@ -131,13 +146,23 @@ export default function Home() {
         fetchReadAll();
     }, [])
 
+    // Message
+    useEffect(() => {
+        fetchReadAllMsg();
+    }, [])
+
     // Post Contact 
 
     return (
         <Layout>
             <div className="max-w-full md:max-w-5xl mx-auto py-[40px]">
-                <div className="text-[40px] font-[700] pb-[20px]">Daftar Kontak</div>
-                <div className="bg-white">
+                <div className="...">
+                    <MenuItems/>
+                </div>
+                <div className="text-[24px] font-[700] mb-[20px]">
+                    <h2>Daftar Kontak</h2>
+                </div>
+                <div className="bg-white rounded-md">
                     <TableContacts
                         data={contacts}
                         loadingTable={isLoading}
@@ -149,6 +174,7 @@ export default function Home() {
                 {openForm &&
                     <FormContact
                         data={form}
+                        dataMsg={message}
                         loadingForm={isLoading}
                         handleOpen={() => setOpenForm(false)}
                         handleChange={_handleChangeForm}
