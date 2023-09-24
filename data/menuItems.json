@@ -1,0 +1,14 @@
+[
+    {
+        "name": "Kontak",
+        "description": "Daftar semua Kontak",
+        "path": "/",
+        "active": true
+    },
+    {
+        "name": "Pesan",
+        "description": "Daftar semua Pesan",
+        "path": "/message",
+        "active": true
+    }
+]

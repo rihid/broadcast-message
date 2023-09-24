@@ -8,10 +8,10 @@ export default function Navbar() {
             <div className="max-w-full md:max-w-5xl mx-auto">
                 <div className="flex justify-between items-center">
                     <div className="flex items-center justify-start gap-[7px]">
-                        <a href="#">
-                            {/* <Image src={BamahaLogo} width={35} height={35} alt="image" /> */}
+                        {/* <a href="#">
+                            <Image src={BamahaLogo} width={35} height={35} alt="image" />
                             Test
-                        </a>
+                        </a> */}
                         <a href="#" className="font-bold text-[18px] leading-7">
                             <span>Broadcast App</span>
                         </a>
