@@ -11,19 +11,6 @@ import MenuItems from '@/components/MenuItems'
 // Supabase
 import supabase from '@/config/supabase'
 
-const dataContact = [
-    {
-        id: 1,
-        name: "Agius",
-        phone: "089111999222",
-    },
-    {
-        id: 2,
-        name: "Mahyudin",
-        phone: "089111999222",
-    },
-];
-
 const initialForm = {
     name: '',
     phone: '',
@@ -36,8 +23,8 @@ export default function Home() {
 
     // Options State
     const [openForm, setOpenForm] = useState(false);
-    const [openEditForm, setEditForm] = useState(false);
     const [isLoading, setIsloading] = useState(true);
+    const [method, setMethod] = useState('POST');
     // Data State
     const [contacts, setContact] = useState([]);
     const [message, setMessage] = useState()
@@ -71,6 +58,8 @@ export default function Home() {
     // Open Create Form
     const _handleOpenForm = () => {
         setOpenForm(true);
+        setForm(initialForm);
+        setMethod('POST')
     }
 
     // handle form input data
@@ -79,23 +68,17 @@ export default function Home() {
         setForm({ ...form, [name]: value });
     }
 
-    // Handle add new Data
-    // const handleAddContact = (contact) => {
-    //     setContact([...contacts, contact]);
-
-    // }
-
     // Submit new data
-    const _handleSubmit = async (e) => {
-        e.preventDefault();
+    const _handleAddData = async () => {
+        // e.preventDefault();
         setIsloading(true);
         if (!form.name || !form.phone) return;
 
-        const {data, error} = await supabase.from('contacts').insert(form);
-        if(error){
+        const { data, error } = await supabase.from('contacts').insert(form);
+        if (error) {
             console.log(error);
         }
-        if(data){
+        if (data) {
             console.log("success")
         }
         await fetchReadAll();
@@ -106,32 +89,33 @@ export default function Home() {
 
     // Handle edit
     const _handleEditData = (contact) => {
-        console.log(contact)
-        setEditForm(true)
-        setForm(contact)
+        // console.log(contact)
+        setOpenForm(true);
+        setForm(contact);
+        setMethod('PUT')
     }
 
-    const _handleUpdatedData = async (e) => {
+    const _handleUpdatedData = async () => {
         // console.log(form.id)
-        e.preventDefault();
+        // e.preventDefault();
         setIsloading(true);
-        // if (!form.name || !form.phone) return;
-        const {data, error} = await supabase.from('contacts').update(form).eq('id', form.id);
-        if(error){
+        if (!form.name || !form.phone) return;
+        const { data, error } = await supabase.from('contacts').update(form).eq('id', form.id);
+        if (error) {
             console.log(error);
         }
-        if(data){
+        if (data) {
             console.log(data)
         }
         await fetchReadAll();
         setIsloading(false);
-        setEditForm(false);
+        setOpenForm(false);
         setForm(initialForm)
     }
 
     // Handle delete data
     const _handleDeleteData = async (id) => {
-        
+
         const confirm = window.confirm(`Apakah anda yakin ingin menghapus data ini`);
         if (!confirm) return;
         const { error } = await supabase.from('contacts').delete().eq('id', id);
@@ -139,6 +123,7 @@ export default function Home() {
             return prev.filter(row => row.id !== id)
         })
     }
+
 
     // Fetch data form API
     // Contact
@@ -157,7 +142,7 @@ export default function Home() {
         <Layout>
             <div className="max-w-full md:max-w-5xl mx-auto py-[40px]">
                 <div className="...">
-                    <MenuItems/>
+                    <MenuItems />
                 </div>
                 <div className="text-[24px] font-[700] mb-[20px]">
                     <h2>Daftar Kontak</h2>
@@ -175,19 +160,12 @@ export default function Home() {
                     <FormContact
                         data={form}
                         dataMsg={message}
+                        method={method}
                         loadingForm={isLoading}
                         handleOpen={() => setOpenForm(false)}
                         handleChange={_handleChangeForm}
-                        handleSubmit={_handleSubmit}
-                    />
-                }
-                {openEditForm &&
-                    <FormEditContact
-                        data={form}
-                        loadingForm={isLoading}
-                        handleOpen={() => setEditForm(false)}
-                        handleChange={_handleChangeForm}
-                        handleSubmit={_handleUpdatedData}
+                        handleInsert={_handleAddData}
+                        handleUpdate={_handleUpdatedData}
                     />
                 }
             </div>

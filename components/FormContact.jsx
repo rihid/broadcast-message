@@ -1,4 +1,4 @@
-import {useState} from 'react'
+import { useState } from 'react'
 import Button from './Button'
 import ButtonIcon from './ButtonIcon'
 import Input from './Input'
@@ -7,19 +7,25 @@ import InputSelect from './InputSelect'
 export default function FormContact({
     data,
     dataMsg,
+    method,
     handleOpen,
     loadingForm,
     handleChange,
-    handleSubmit,
+    handleInsert,
+    handleUpdate,
 }) {
-    // console.log(data)
-    
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        method === 'POST' ? handleInsert() : handleUpdate();
+    }
+
     return (
         <div className="fixed top-0 left-0 w-full h-full bg-[#000000d4]">
             <div className="fixed top-0 right-0 w-full md:w-[440px] h-full bg-white overflow-auto">
                 <div className="flex justify-between border-b">
                     <div className="p-[20px]">
-                        <div className="text-[20px] font-[700]">Tambah Data</div>
+                        <div className="text-[20px] font-[700]">{method === 'POST' ? 'Tambah Data' : 'Edit Data'}</div>
                     </div>
                     <div className="p-[20px]">
                         <ButtonIcon icon="icon-close" size={12} onClick={handleOpen} />
@@ -53,7 +59,7 @@ export default function FormContact({
                             id="message_id"
                             name="message_id"
                             value={data.message_id}
-                            options={dataMsg.map(row => ({...row, name: row.title}))}
+                            options={dataMsg.map(row => ({ ...row, name: row.title }))}
                             onChange={handleChange}
                         />
                     </div>
