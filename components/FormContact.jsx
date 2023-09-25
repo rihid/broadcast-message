@@ -19,21 +19,21 @@ export default function FormContact({
         e.preventDefault();
         method === 'POST' ? handleInsert() : handleUpdate();
     }
-
+    console.log(data)
     return (
         <div className="fixed top-0 left-0 w-full h-full bg-[#000000d4]">
             <div className="fixed top-0 right-0 w-full md:w-[440px] h-full bg-white overflow-auto">
                 <div className="flex justify-between border-b">
-                    <div className="p-[20px]">
+                    <div className="p-4">
                         <div className="text-[20px] font-[700]">{method === 'POST' ? 'Tambah Data' : 'Edit Data'}</div>
                     </div>
-                    <div className="p-[20px]">
+                    <div className="p-4">
                         <ButtonIcon icon="icon-close" size={12} onClick={handleOpen} />
                     </div>
                 </div>
                 <form
                     onSubmit={handleSubmit}
-                    className="flex flex-col gap-[20px] p-[20px]"
+                    className="flex flex-col gap-[20px] p-4"
                 >
                     <div className="">
                         <Input

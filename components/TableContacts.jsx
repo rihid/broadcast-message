@@ -5,9 +5,11 @@ export default function TableContacts({
     handleOpenForm,
     loadingTable,
     data,
+    handleSendMessage,
     handleEdit,
     handleDelete,
 }) {
+
     const [searchField, setSearchField] = useState('');
     const [selectView, setSelectView] = useState(50);
 
@@ -30,13 +32,14 @@ export default function TableContacts({
                     <th scope="col" className="px-6 py-3">NO</th>
                     <th scope="col" className="px-6 py-3">Nama</th>
                     <th scope="col" className="px-6 py-3">No HP</th>
+                    <th scope="col" className="px-6 py-3">Broadcast</th>
                     <th scope="col" className="px-6 py-3">Aksi</th>
                 </tr>
             </thead>
         )
     }
 
-    const TableRow = ({ index, row, editRow, deleteRow }) => {
+    const TableRow = ({ index, row, sendMessage, editRow, deleteRow }) => {
         return (
             <tr className="bg-white border-b hover:bg-gray-50 " key={index}>
                 <td className="px-6 py-4">{index + 1}</td>
@@ -44,7 +47,15 @@ export default function TableContacts({
                 <td className="px-6 py-4">{row.phone}</td>
                 <td className="px-6 py-4">
                     <span
-                        className="font-medium text-blue-500 cursor-pointer hover:underline"
+                        className="font-medium text-green-500 cursor-pointer hover:underline"
+                        onClick={() => sendMessage(row)}
+                    >
+                        Kirim Pesan
+                    </span>
+                </td>
+                <td className="px-6 py-4">
+                    <span
+                        className="font-medium text-[#6f6fe3] cursor-pointer hover:underline"
                         onClick={() => editRow(row)}
                     >
                         Edit
@@ -70,22 +81,25 @@ export default function TableContacts({
             <>
                 <FormOption
                     handleOpenForm={handleOpenForm}
+                    searchField={searchField}
+					setSearchField={setSearchField}
                 />
-                <div className="p-[20px]">
+                <div className="p-[20px] overflow-x-auto">
                     <table className="w-full text-sm text-left text-gray-500">
                         <TableHead />
                         {/* {filterData.length > 0 && */}
-                            <tbody>
-                                {filterData.map((row, index) =>
-                                    <TableRow
-                                        key={index}
-                                        index={index}
-                                        row={row}
-                                        editRow={handleEdit}
-                                        deleteRow={handleDelete}
-                                    />
-                                )}
-                            </tbody>
+                        <tbody>
+                            {filterData.map((row, index) =>
+                                <TableRow
+                                    key={index}
+                                    index={index}
+                                    row={row}
+                                    sendMessage={handleSendMessage}
+                                    editRow={handleEdit}
+                                    deleteRow={handleDelete}
+                                />
+                            )}
+                        </tbody>
                         {/* } */}
                     </table>
                     <TableCount count={filterData.length} />
