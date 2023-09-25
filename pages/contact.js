@@ -1,27 +1,47 @@
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
-import { Layout, MenuItems, TableMessages, FormMessages } from '@/components'
+import Layout from '@/components/Layout'
+import Button from '@/components/Button'
+import Input from '@/components/Input'
+import TableContacts from '@/components/TableContacts'
+import FormContact from '@/components/FormContact'
+import MenuItems from '@/components/MenuItems'
 
 // Supabase
 import supabase from '@/config/supabase'
 
 const initialForm = {
-    title: '',
-    body: '',
+    name: '',
+    phone: '',
+    address: '',
+    message_id: 1,
 }
 
-export default function Message() {
+export default function Home() {
 
     // Options State
     const [openForm, setOpenForm] = useState(false);
     const [isLoading, setIsloading] = useState(true);
     const [method, setMethod] = useState('POST');
     // Data State
-    const [message, setMessage] = useState([]);
+    const [contacts, setContact] = useState([]);
+    const [message, setMessage] = useState();
     const [form, setForm] = useState(initialForm);
 
     // Feth all data
-    // Message
+    // Contact
+    const fetchReadAll = async () => {
+        const { data, error } = await supabase.from('contacts').select()
+        if (error) {
+            console.log(error)
+            setIsloading(false)
+        }
+        if (data) {
+            setContact(data);
+            setIsloading(false)
+        }
+    }
+    // MEssage
     const fetchReadAllMsg = async () => {
         const { data, error } = await supabase.from('messages').select()
         if (error) {
@@ -48,18 +68,21 @@ export default function Message() {
 
     // Submit new data
     const _handleAddData = async () => {
+        // e.preventDefault();
         setIsloading(true);
-
-        const { data, error } = await supabase.from('messages').insert(form);
+        if (!form.name || !form.phone) return;
+        const cleanedPhone = form.phone.replace(/\D/g, '').startsWith('0') ? `62${form.phone.substring(1)}` : '';
+        console.log(cleanedPhone)
+        const { data, error } = await supabase.from('contacts').insert({...form, phone: cleanedPhone});
         if (error) {
             console.log(error);
         }
         if (data) {
             console.log("success")
         }
-        await fetchReadAllMsg();
         setIsloading(false);
-        setOpenForm(false)
+        await fetchReadAll();
+        setOpenForm(false);
         setForm(initialForm)
     }
 
@@ -75,14 +98,15 @@ export default function Message() {
         // console.log(form.id)
         // e.preventDefault();
         setIsloading(true);
-        const { data, error } = await supabase.from('messages').update(form).eq('id', form.id);
+        if (!form.name || !form.phone) return;
+        const { data, error } = await supabase.from('contacts').update(form).eq('id', form.id);
         if (error) {
             console.log(error);
         }
         if (data) {
             console.log(data)
         }
-        await fetchReadAllMsg();
+        await fetchReadAll();
         setIsloading(false);
         setOpenForm(false);
         setForm(initialForm)
@@ -93,17 +117,23 @@ export default function Message() {
 
         const confirm = window.confirm(`Apakah anda yakin ingin menghapus data ini`);
         if (!confirm) return;
-        const { error } = await supabase.from('messages').delete().eq('id', id);
-        setMessage(prev => {
+        const { error } = await supabase.from('contacts').delete().eq('id', id);
+        setContact(prev => {
             return prev.filter(row => row.id !== id)
         })
     }
 
+    // Send Message
+    const _handleSendMessage = (data) => {
+        const text = message.find( row => row.id === data.message_id).body
+        const waSend = `https://api.whatsapp.com/send?phone=${data.phone}&text=${encodeURIComponent(text)}`
+        console.log(waSend)
+    }
+
 
     // Fetch data form API
-
-    // Message
     useEffect(() => {
+        fetchReadAll();
         fetchReadAllMsg();
     }, [])
 
@@ -115,21 +145,23 @@ export default function Message() {
                 <div className="...">
                     <MenuItems />
                 </div>
-                <div className="text-[24px] font-[700] mb-[20px]">
+                <div className="text-[24px] font-[700] mb-[20px] mx-4 md:mx-0 lg:mx-0">
                     <h2>Daftar Kontak</h2>
                 </div>
-                <div className="bg-white rounded-md">
-                    <TableMessages
-                        data={message}
+                <div className="bg-white rounded-md mx-4 md:mx-0 lg:mx-0">
+                    <TableContacts
+                        data={contacts}
                         loadingTable={isLoading}
                         handleOpenForm={_handleOpenForm}
+                        handleSendMessage={_handleSendMessage}
                         handleEdit={_handleEditData}
                         handleDelete={_handleDeleteData}
                     />
                 </div>
                 {openForm &&
-                    <FormMessages
+                    <FormContact
                         data={form}
+                        dataMsg={message}
                         method={method}
                         loadingForm={isLoading}
                         handleOpen={() => setOpenForm(false)}

@@ -1,47 +1,27 @@
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
-import Layout from '@/components/Layout'
-import Button from '@/components/Button'
-import Input from '@/components/Input'
-import TableContacts from '@/components/TableContacts'
-import FormContact from '@/components/FormContact'
-import MenuItems from '@/components/MenuItems'
+import { Layout, MenuItems, TableMessages, FormMessages } from '@/components'
 
 // Supabase
 import supabase from '@/config/supabase'
 
 const initialForm = {
-    name: '',
-    phone: '',
-    address: '',
-    message_id: 1,
+    title: '',
+    body: '',
 }
 
-export default function Home() {
+export default function Message() {
 
     // Options State
     const [openForm, setOpenForm] = useState(false);
     const [isLoading, setIsloading] = useState(true);
     const [method, setMethod] = useState('POST');
     // Data State
-    const [contacts, setContact] = useState([]);
-    const [message, setMessage] = useState();
+    const [message, setMessage] = useState([]);
     const [form, setForm] = useState(initialForm);
 
     // Feth all data
-    // Contact
-    const fetchReadAll = async () => {
-        const { data, error } = await supabase.from('contacts').select()
-        if (error) {
-            console.log(error)
-            setIsloading(false)
-        }
-        if (data) {
-            setContact(data);
-            setIsloading(false)
-        }
-    }
-    // MEssage
+    // Message
     const fetchReadAllMsg = async () => {
         const { data, error } = await supabase.from('messages').select()
         if (error) {
@@ -68,18 +48,16 @@ export default function Home() {
 
     // Submit new data
     const _handleAddData = async () => {
-        // e.preventDefault();
         setIsloading(true);
-        if (!form.name || !form.phone) return;
 
-        const { data, error } = await supabase.from('contacts').insert(form);
+        const { data, error } = await supabase.from('messages').insert(form);
         if (error) {
             console.log(error);
         }
         if (data) {
             console.log("success")
         }
-        await fetchReadAll();
+        await fetchReadAllMsg();
         setIsloading(false);
         setOpenForm(false)
         setForm(initialForm)
@@ -97,15 +75,14 @@ export default function Home() {
         // console.log(form.id)
         // e.preventDefault();
         setIsloading(true);
-        if (!form.name || !form.phone) return;
-        const { data, error } = await supabase.from('contacts').update(form).eq('id', form.id);
+        const { data, error } = await supabase.from('messages').update(form).eq('id', form.id);
         if (error) {
             console.log(error);
         }
         if (data) {
             console.log(data)
         }
-        await fetchReadAll();
+        await fetchReadAllMsg();
         setIsloading(false);
         setOpenForm(false);
         setForm(initialForm)
@@ -116,18 +93,14 @@ export default function Home() {
 
         const confirm = window.confirm(`Apakah anda yakin ingin menghapus data ini`);
         if (!confirm) return;
-        const { error } = await supabase.from('contacts').delete().eq('id', id);
-        setContact(prev => {
+        const { error } = await supabase.from('messages').delete().eq('id', id);
+        setMessage(prev => {
             return prev.filter(row => row.id !== id)
         })
     }
 
 
     // Fetch data form API
-    // Contact
-    useEffect(() => {
-        fetchReadAll();
-    }, [])
 
     // Message
     useEffect(() => {
@@ -142,12 +115,12 @@ export default function Home() {
                 <div className="...">
                     <MenuItems />
                 </div>
-                <div className="text-[24px] font-[700] mb-[20px]">
-                    <h2>Daftar Kontak</h2>
+                <div className="text-[24px] font-[700] mb-[20px] mx-4 md:mx-0 lg:mx-0">
+                    <h2>Daftar Pesan Default</h2>
                 </div>
-                <div className="bg-white rounded-md">
-                    <TableContacts
-                        data={contacts}
+                <div className="bg-white rounded-md mx-4 md:mx-0 lg:mx-0">
+                    <TableMessages
+                        data={message}
                         loadingTable={isLoading}
                         handleOpenForm={_handleOpenForm}
                         handleEdit={_handleEditData}
@@ -155,9 +128,8 @@ export default function Home() {
                     />
                 </div>
                 {openForm &&
-                    <FormContact
+                    <FormMessages
                         data={form}
-                        dataMsg={message}
                         method={method}
                         loadingForm={isLoading}
                         handleOpen={() => setOpenForm(false)}
