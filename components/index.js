@@ -8,6 +8,7 @@ export {default as FormOption} from './FormOption';
 export {default as Icon} from './Icon';
 export {default as Input} from './Input';
 export {default as InputSelect} from './InputSelect';
+export {default as InputTextarea} from './InputTextarea';
 export {default as Layout} from './Layout';
 export {default as MenuItems} from './MenuItems';
 export {default as Navbar} from './Navbar';

@@ -113,12 +113,12 @@ export default function Message() {
         <Layout>
             <div className="max-w-full md:max-w-5xl mx-auto py-[40px]">
                 <div className="...">
-                    <MenuItems />
+                    <MenuItems slug="pesan" />
                 </div>
                 <div className="text-[24px] font-[700] mb-[20px] mx-4 md:mx-0 lg:mx-0">
                     <h2>Daftar Pesan Default</h2>
                 </div>
-                <div className="bg-white rounded-md mx-4 md:mx-0 lg:mx-0">
+                <div className="bg-white rounded-md mx-4 md:mx-0 lg:mx-0 border">
                     <TableMessages
                         data={message}
                         loadingTable={isLoading}

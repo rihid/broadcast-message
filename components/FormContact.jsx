@@ -19,7 +19,7 @@ export default function FormContact({
         e.preventDefault();
         method === 'POST' ? handleInsert() : handleUpdate();
     }
-    console.log(data)
+    // console.log(data)
     return (
         <div className="fixed top-0 left-0 w-full h-full bg-[#000000d4]">
             <div className="fixed top-0 right-0 w-full md:w-[440px] h-full bg-white overflow-auto">

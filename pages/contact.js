@@ -1,11 +1,6 @@
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
-import Layout from '@/components/Layout'
-import Button from '@/components/Button'
-import Input from '@/components/Input'
-import TableContacts from '@/components/TableContacts'
-import FormContact from '@/components/FormContact'
-import MenuItems from '@/components/MenuItems'
+import { Layout, MenuItems, TableContacts, FormContact } from '@/components'
 
 // Supabase
 import supabase from '@/config/supabase'
@@ -143,12 +138,12 @@ export default function Home() {
         <Layout>
             <div className="max-w-full md:max-w-5xl mx-auto py-[40px]">
                 <div className="...">
-                    <MenuItems />
+                    <MenuItems slug="contact" />
                 </div>
                 <div className="text-[24px] font-[700] mb-[20px] mx-4 md:mx-0 lg:mx-0">
                     <h2>Daftar Kontak</h2>
                 </div>
-                <div className="bg-white rounded-md mx-4 md:mx-0 lg:mx-0">
+                <div className="bg-white rounded-md mx-4 md:mx-0 lg:mx-0 border">
                     <TableContacts
                         data={contacts}
                         loadingTable={isLoading}
