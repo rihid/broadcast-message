@@ -1,4 +1,5 @@
 import React from 'react'
+import { signOut } from "next-auth/react"
 import Image from 'next/image'
 import Icon from './Icon'
 
@@ -18,9 +19,9 @@ export default function Navbar() {
                     </div>
                     <div
                         className="font-semibold text-gray-500 my-[10px] py-[10px] flex items-center gap-2 cursor-pointer"
-                        // onClick={() => signOut({
-                        //     callbackUrl: process.env.NEXT_PUBLIC_ADMIN_SIGNIN_URL
-                        // })}
+                        onClick={() => signOut({
+                            callbackUrl: process.env.NEXT_PUBLIC_ADMIN_SIGNIN_URL
+                        })}
                     >
                         <Icon name="icon-sign-out" size={20} />
                         <span>Keluar</span>

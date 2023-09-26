@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
+import { useRouter } from 'next/router'
+import { useSession } from 'next-auth/react'
 import { Layout, MenuItems, TableContacts, FormContact } from '@/components'
 
 // Supabase
@@ -13,6 +15,9 @@ const initialForm = {
 }
 
 export default function Home() {
+    // Auth
+    const router = useRouter();
+    const { status } = useSession();
 
     // Options State
     const [openForm, setOpenForm] = useState(false);
@@ -22,6 +27,11 @@ export default function Home() {
     const [contacts, setContact] = useState([]);
     const [message, setMessage] = useState();
     const [form, setForm] = useState(initialForm);
+
+    // Auth 
+    useEffect(() => {
+        if (status === 'unauthenticated') router.replace('/auth/signin')
+    }, [status, router])
 
     // Feth all data
     // Contact
@@ -68,7 +78,7 @@ export default function Home() {
         if (!form.name || !form.phone) return;
         const cleanedPhone = form.phone.replace(/\D/g, '').startsWith('0') ? `62${form.phone.substring(1)}` : '';
         console.log(cleanedPhone)
-        const { data, error } = await supabase.from('contacts').insert({...form, phone: cleanedPhone});
+        const { data, error } = await supabase.from('contacts').insert({ ...form, phone: cleanedPhone });
         if (error) {
             console.log(error);
         }
@@ -120,7 +130,7 @@ export default function Home() {
 
     // Send Message
     const _handleSendMessage = (data) => {
-        const text = message.find( row => row.id === data.message_id).body
+        const text = message.find(row => row.id === data.message_id).body
         const waSend = `https://api.whatsapp.com/send?phone=${data.phone}&text=${encodeURIComponent(text)}`
         console.log(waSend)
     }
@@ -133,39 +143,40 @@ export default function Home() {
     }, [])
 
     // Post Contact 
-
-    return (
-        <Layout>
-            <div className="max-w-full md:max-w-5xl mx-auto py-[40px]">
-                <div className="...">
-                    <MenuItems slug="contact" />
+    if(status === 'authenticated'){
+        return (
+            <Layout>
+                <div className="max-w-full md:max-w-5xl mx-auto py-[40px]">
+                    <div className="...">
+                        <MenuItems slug="contact" />
+                    </div>
+                    <div className="text-[24px] font-[700] mb-[20px] mx-4 md:mx-0 lg:mx-0">
+                        <h2>Daftar Kontak</h2>
+                    </div>
+                    <div className="bg-white rounded-md mx-4 md:mx-0 lg:mx-0 border">
+                        <TableContacts
+                            data={contacts}
+                            loadingTable={isLoading}
+                            handleOpenForm={_handleOpenForm}
+                            handleSendMessage={_handleSendMessage}
+                            handleEdit={_handleEditData}
+                            handleDelete={_handleDeleteData}
+                        />
+                    </div>
+                    {openForm &&
+                        <FormContact
+                            data={form}
+                            dataMsg={message}
+                            method={method}
+                            loadingForm={isLoading}
+                            handleOpen={() => setOpenForm(false)}
+                            handleChange={_handleChangeForm}
+                            handleInsert={_handleAddData}
+                            handleUpdate={_handleUpdatedData}
+                        />
+                    }
                 </div>
-                <div className="text-[24px] font-[700] mb-[20px] mx-4 md:mx-0 lg:mx-0">
-                    <h2>Daftar Kontak</h2>
-                </div>
-                <div className="bg-white rounded-md mx-4 md:mx-0 lg:mx-0 border">
-                    <TableContacts
-                        data={contacts}
-                        loadingTable={isLoading}
-                        handleOpenForm={_handleOpenForm}
-                        handleSendMessage={_handleSendMessage}
-                        handleEdit={_handleEditData}
-                        handleDelete={_handleDeleteData}
-                    />
-                </div>
-                {openForm &&
-                    <FormContact
-                        data={form}
-                        dataMsg={message}
-                        method={method}
-                        loadingForm={isLoading}
-                        handleOpen={() => setOpenForm(false)}
-                        handleChange={_handleChangeForm}
-                        handleInsert={_handleAddData}
-                        handleUpdate={_handleUpdatedData}
-                    />
-                }
-            </div>
-        </Layout>
-    )
+            </Layout>
+        )
+    }
 }

@@ -1,14 +1,23 @@
 [
+	{
+		"id": 1,
+		"name": "Pesan",
+		"icon": "",
+		"path": "/",
+		"slug": "pesan"
+	},
+	{
+		"id": 2,
+		"name": "Kontak",
+		"icon": "",
+		"path": "contact/",
+		"slug": "contact"
+	},
     {
-        "name": "Kontak",
-        "description": "Daftar semua Kontak",
-        "path": "/",
-        "active": true
-    },
-    {
-        "name": "Pesan",
-        "description": "Daftar semua Pesan",
-        "path": "/message",
-        "active": true
-    }
+		"id": 3,
+		"name": "Selesai",
+		"icon": "",
+		"path": "#",
+		"slug": "finished"
+	}
 ]
