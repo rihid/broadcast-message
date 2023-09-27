@@ -1,15 +1,17 @@
 import { useState, } from 'react'
 import FormOption from './FormOption'
+import Link from 'next/link';
 
 export default function TableContacts({
     handleOpenForm,
     loadingTable,
     data,
     handleSendMessage,
+    handleDefaultMessage,
     handleEdit,
     handleDelete,
 }) {
-
+    // console.log(handleSendMessage)
     const [searchField, setSearchField] = useState('');
     const [selectView, setSelectView] = useState(50);
 
@@ -24,6 +26,7 @@ export default function TableContacts({
             return row
         }
     });
+    
 
     const TableHead = () => {
         return (
@@ -39,19 +42,21 @@ export default function TableContacts({
         )
     }
 
-    const TableRow = ({ index, row, sendMessage, editRow, deleteRow }) => {
+    const TableRow = ({ index, row, sendMessage, defaultMessage, editRow, deleteRow }) => {
         return (
             <tr className="bg-white border-b hover:bg-gray-50 " key={index}>
                 <td className="px-6 py-4">{index + 1}</td>
                 <td className="px-6 py-4">{row.name}</td>
                 <td className="px-6 py-4">{row.phone}</td>
                 <td className="px-6 py-4">
-                    <span
+                    <Link
+                        href={`https://api.whatsapp.com/send?phone=${row.phone}&text=${defaultMessage(row.message_id)}`}
+                        target='_blank'
                         className="font-medium text-green-500 cursor-pointer hover:underline"
-                        onClick={() => sendMessage(row)}
+                        // onClick={() => sendMessage(row)}
                     >
                         Kirim Pesan
-                    </span>
+                    </Link>
                 </td>
                 <td className="px-6 py-4">
                     <span
@@ -94,7 +99,8 @@ export default function TableContacts({
                                     key={index}
                                     index={index}
                                     row={row}
-                                    sendMessage={handleSendMessage}
+                                    // sendMessage={handleSendMessage}
+                                    defaultMessage={handleDefaultMessage}
                                     editRow={handleEdit}
                                     deleteRow={handleDelete}
                                 />

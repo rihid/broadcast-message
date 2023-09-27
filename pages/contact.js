@@ -77,7 +77,7 @@ export default function Home() {
         setIsloading(true);
         if (!form.name || !form.phone) return;
         const cleanedPhone = form.phone.replace(/\D/g, '').startsWith('0') ? `62${form.phone.substring(1)}` : '';
-        console.log(cleanedPhone)
+        // console.log(cleanedPhone)
         const { data, error } = await supabase.from('contacts').insert({ ...form, phone: cleanedPhone });
         if (error) {
             console.log(error);
@@ -129,12 +129,17 @@ export default function Home() {
     }
 
     // Send Message
-    const _handleSendMessage = (data) => {
-        const text = message.find(row => row.id === data.message_id).body
-        const waSend = `https://api.whatsapp.com/send?phone=${data.phone}&text=${encodeURIComponent(text)}`
-        console.log(waSend)
-    }
+    // const _handleSendMessage = (data) => {
+    //     const text = message.find(row => row.id === data.message_id).body
+    //     const waSend = `https://api.whatsapp.com/send?phone=${data.phone}&text=${encodeURIComponent(text)}`
+    //     // console.log(waSend)
+    //     return waSend
+    // }
 
+    const _handleDefaultMessage = (id) => {
+        const text = message.find( row => row.id == id).body;   
+        return encodeURIComponent(text)
+    }
 
     // Fetch data form API
     useEffect(() => {
@@ -158,7 +163,8 @@ export default function Home() {
                             data={contacts}
                             loadingTable={isLoading}
                             handleOpenForm={_handleOpenForm}
-                            handleSendMessage={_handleSendMessage}
+                            // handleSendMessage={_handleSendMessage}
+                            handleDefaultMessage={_handleDefaultMessage}
                             handleEdit={_handleEditData}
                             handleDelete={_handleDeleteData}
                         />
