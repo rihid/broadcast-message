@@ -71,7 +71,7 @@ export default function TableMessages({
                 <FormOption
                     handleOpenForm={handleOpenForm}
                 />
-                <div className="p-[20px]">
+                <div className="p-[20px] overflow-x-auto">
                     <table className="w-full text-sm text-left text-gray-500">
                         <TableHead />
                         {/* {filterData.length > 0 && */}
