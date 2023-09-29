@@ -4,6 +4,7 @@ import Link from 'next/link';
 
 export default function TableContacts({
     handleOpenForm,
+    handleOpenFormExcel,
     loadingTable,
     data,
     handleSendMessage,
@@ -86,8 +87,10 @@ export default function TableContacts({
             <>
                 <FormOption
                     handleOpenForm={handleOpenForm}
+                    handleOpenFormExcel={handleOpenFormExcel}
                     searchField={searchField}
 					setSearchField={setSearchField}
+                    withExportExcel
                 />
                 <div className="p-[20px] overflow-x-auto">
                     <table className="w-full text-sm text-left text-gray-500">

@@ -40,6 +40,7 @@ export default function FormContact({
                             label="Nama Pelanggan"
                             id="name"
                             name="name"
+                            placeholder="..."
                             value={data.name}
                             onChange={handleChange}
                         />
@@ -49,6 +50,7 @@ export default function FormContact({
                             label="No HP"
                             id="phone"
                             name="phone"
+                            placeholder="..."
                             value={data.phone}
                             onChange={handleChange}
                         />

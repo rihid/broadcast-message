@@ -40,6 +40,7 @@ export default function FormMessages({
                             label="Judul*"
                             id="title"
                             name="title"
+                            placeholder="..."
                             value={data.title}
                             onChange={handleChange}
                         />
@@ -49,6 +50,7 @@ export default function FormMessages({
                             label="Isi Pesan"
                             id="body"
                             name="body"
+                            placeholder="..."
                             value={data.body}
                             onChange={handleChange}
                         />

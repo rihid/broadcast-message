@@ -5,8 +5,10 @@ import Icon from './Icon'
 
 export default function FormOption({
     handleOpenForm,
+    handleOpenFormExcel,
     searchField,
-    setSearchField
+    setSearchField,
+    withExportExcel,
 }) {
     return (
         <div className="flex flex-col gap-4 md:flex-row justify-between items-center p-[20px]">
@@ -21,10 +23,20 @@ export default function FormOption({
 					onChange={(e) => setSearchField(e.target.value)}
                 />
             </div>
-            <Button
-                label="+ Kontak"
-                onClick={handleOpenForm}
-            />
+            <div className="flex flex-col w-full items-center md:flex-row md:justify-end gap-4">
+                {withExportExcel && 
+                    <Button
+                        label="+ Excel"
+                        color="secondary"
+                        onClick={handleOpenFormExcel}
+                    />
+                }
+                <Button
+                    label="+ Kontak"
+                    color="primary"
+                    onClick={handleOpenForm}
+                />
+            </div>
         </div>
     )
 }

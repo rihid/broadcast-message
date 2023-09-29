@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { useSession } from 'next-auth/react'
-import { Layout, MenuItems, TableContacts, FormContact } from '@/components'
+import { Layout, MenuItems, TableContacts, FormContact, FormUploadExcel } from '@/components'
 
 // Supabase
 import supabase from '@/config/supabase'
@@ -21,11 +21,13 @@ export default function Home() {
 
     // Options State
     const [openForm, setOpenForm] = useState(false);
+    const [FormExcel, setFormExcel] = useState(false)
     const [isLoading, setIsloading] = useState(true);
     const [method, setMethod] = useState('POST');
     // Data State
     const [contacts, setContact] = useState([]);
     const [message, setMessage] = useState();
+    const [excelData, setExcelData] = useState([])
     const [form, setForm] = useState(initialForm);
 
     // Auth 
@@ -65,6 +67,17 @@ export default function Home() {
         setMethod('POST')
     }
 
+    const _handleOpenFormExcel = () => {
+        setFormExcel(true);
+        setMethod('POST');
+    }
+
+    // Hadle upload Excel data
+    const _handleUploadExcel = async (data) => {
+        setExcelData(data)
+        // console.log(data)
+    }
+
     // handle form input data
     const _handleChangeForm = (e) => {
         const { name, value } = e.target;
@@ -90,6 +103,17 @@ export default function Home() {
         setOpenForm(false);
         setForm(initialForm)
     }
+
+    const _handleSubmitExcel = async () => {
+		console.log(excelData)
+		// if (excelData.length === 0) return;
+		// await Promise.all(excelData.map(async (row) => {
+		// 	await ....
+		// }))
+		setFormExcel(false)
+		setExcelData([])
+		await fetchReadAll()
+	}
 
     // Handle edit
     const _handleEditData = (contact) => {
@@ -128,6 +152,13 @@ export default function Home() {
         })
     }
 
+    const _handleClickAccordion = () => {
+		const confirm = window.confirm('Apakah Anda yakin menghapus data ini?')
+		
+		if(!confirm) return;
+		setExcelData([])
+    }
+
     // Send Message
     // const _handleSendMessage = (data) => {
     //     const text = message.find(row => row.id === data.message_id).body
@@ -137,7 +168,7 @@ export default function Home() {
     // }
 
     const _handleDefaultMessage = (id) => {
-        const text = message.find( row => row.id == id).body;   
+        const text = message?.find(row => row.id == id).body;
         return encodeURIComponent(text)
     }
 
@@ -148,7 +179,7 @@ export default function Home() {
     }, [])
 
     // Post Contact 
-    if(status === 'authenticated'){
+    if (status === 'authenticated') {
         return (
             <Layout>
                 <div className="max-w-full md:max-w-5xl mx-auto py-[40px]">
@@ -163,6 +194,7 @@ export default function Home() {
                             data={contacts}
                             loadingTable={isLoading}
                             handleOpenForm={_handleOpenForm}
+                            handleOpenFormExcel={_handleOpenFormExcel}
                             // handleSendMessage={_handleSendMessage}
                             handleDefaultMessage={_handleDefaultMessage}
                             handleEdit={_handleEditData}
@@ -179,6 +211,17 @@ export default function Home() {
                             handleChange={_handleChangeForm}
                             handleInsert={_handleAddData}
                             handleUpdate={_handleUpdatedData}
+                        />
+                    }
+                    {FormExcel &&
+                        <FormUploadExcel
+                            method={method}
+                            data={excelData}
+                            handleOpen={() => setFormExcel(false)}
+                            handleChange={_handleChangeForm}
+                            handleClickAccordion={_handleClickAccordion}
+                            handleUpload={_handleUploadExcel}
+                            handleSubmit={_handleSubmitExcel}
                         />
                     }
                 </div>
